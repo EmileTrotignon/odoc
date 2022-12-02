@@ -1,5 +1,3 @@
-
-
 let string_of_uid uid =
   match uid with
   | Shape.Uid.Compilation_unit s -> s

@@ -10,6 +10,5 @@ let lines_locs src =
   in
   poses
 
-let split src =
-  lines_locs src |> List.rev_map (fun (x, y) -> (Types.Line x, y))
+let split src = lines_locs src |> List.rev_map (fun (x, y) -> (Types.Line x, y))
 (* The order won't matter *)

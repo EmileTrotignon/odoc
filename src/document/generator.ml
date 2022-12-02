@@ -1674,15 +1674,12 @@ module Make (Syntax : SYNTAX) = struct
       let doc, _ = extract 0 (String.length src) l [] in
       List.rev doc
 
-    let impl src =
-      let syntax_locs =
-        Source_info.Syntax.highlight src
-      in
-      let lines_locs =
-        Source_info.Lines.split src
-      in
-      let locs = List.rev_append lines_locs syntax_locs in
-      doc_of_poses src locs
+    let impl ~infos src =
+      let syntax_locs = Source_info.Syntax.highlight src in
+      let lines_locs = Source_info.Lines.split src in
+      let infos = List.rev_append infos syntax_locs in
+      let infos = List.rev_append infos lines_locs in
+      doc_of_poses src infos
   end
 
   open Module
@@ -1692,11 +1689,12 @@ module Make (Syntax : SYNTAX) = struct
       parent:Paths.Identifier.Module.t ->
       ext:string ->
       contents:string ->
+      infos:Source_info.Types.infos ->
       Source_page.t
   end = struct
-    let source ~parent ~ext ~contents =
+    let source ~parent ~ext ~contents ~infos =
       let url = Url.Path.source_file_from_identifier ~ext parent in
-      let contents = Impl.impl contents in
+      let contents = Impl.impl ~infos contents in
       { Source_page.url; contents }
   end
 
@@ -1726,13 +1724,14 @@ module Make (Syntax : SYNTAX) = struct
       in
       List.map f t
 
-    let source_opt parent ~ext = function
-      | Some contents -> [ Source_page.source ~parent ~ext ~contents ]
+    let source_opt parent ~ext infos = function
+      | Some contents -> [ Source_page.source ~parent ~ext ~contents ~infos ]
       | None -> []
 
-    let source { Lang.Source_code.parent; intf_source; impl_source } =
-      source_opt parent ~ext:".ml" impl_source
-      @ source_opt parent ~ext:".mli" intf_source
+    let source { Lang.Source_code.parent; intf_source; impl_source; impl_info }
+        =
+      source_opt parent ~ext:".ml" impl_info impl_source
+      @ source_opt parent ~ext:".mli" [] intf_source
 
     let compilation_unit (t : Odoc_model.Lang.Compilation_unit.t) =
       let url = Url.Path.from_identifier t.id in
