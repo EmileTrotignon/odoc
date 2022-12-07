@@ -363,7 +363,7 @@ let source_files_of_odoc_module lib module_ =
         List.map (fun ext -> Fpath.add_ext ext path) exts
         |> List.find_opt (fun f -> Bos.OS.File.exists f |> get_ok)
       in
-      let impl = find_by_extension path ["ml-gen" ; "ml"] in
+      let impl = find_by_extension path ["pp.ml" ;"ml-gen"; "ml"] in
       let intf = find_by_extension path ["mli"] in
       (impl, intf)
 
