@@ -59,3 +59,7 @@ The main other pages of this site:
 - {!page-parent_child_spec} Parent/Child specification
 - {!page-interface} Interface guarantees
 
+{1 Internal API}
+
+{!modules: Odoc_html Odoc_document Odoc_latex Odoc_loader Odoc_manpage Odoc_model Odoc_model_desc Odoc}
+
