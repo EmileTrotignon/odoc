@@ -785,7 +785,7 @@ td.def-doc *:first-child {
   text-decoration: underline;
 }
 
-.VAL, .TYPE, .LET, .REC, .IN, .OPEN, .NONREC, .MODULE, .METHOD, .LETOP, .INHERIT, .INCLUDE, .FUNCTOR, .EXTERNAL, .CONSTRAINT, .ASSERT, .AND {
+.VAL, .TYPE, .LET, .REC, .IN, .OPEN, .NONREC, .MODULE, .METHOD, .LETOP, .INHERIT, .INCLUDE, .FUNCTOR, .EXTERNAL, .CONSTRAINT, .ASSERT, .AND, .END {
   font-weight: bold;
   color:#C8AD7F;
 }
