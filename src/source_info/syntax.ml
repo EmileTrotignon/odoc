@@ -7,6 +7,9 @@ let syntax_highlighting_locs src =
     | EOF -> []
     | COMMENT (_, loc) as tok ->
         (tok, (loc.loc_start.pos_cnum, loc.loc_end.pos_cnum)) :: collect lexbuf
+    | DOCSTRING doc as tok ->
+        let loc = Docstrings.docstring_loc doc in
+        (tok, (loc.loc_start.pos_cnum, loc.loc_end.pos_cnum)) :: collect lexbuf
     | tok -> (tok, (loc_start.pos_cnum, loc_end.pos_cnum)) :: collect lexbuf
   in
   collect lexbuf
