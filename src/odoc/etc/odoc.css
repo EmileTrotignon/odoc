@@ -248,7 +248,15 @@ a:hover {
   box-shadow: 0 0px 0 1px var(--target-shadow) !important;
   border-radius: 1px;
 }
-
+.source_line:target {
+  position: absolute;
+  height: 22.5px;
+  width: 100ex;
+  pointer-events: none;
+}
+html {
+  scroll-behavior: smooth;
+}
 *:hover > a.anchor {
   visibility: visible;
 }
