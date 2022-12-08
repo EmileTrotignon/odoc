@@ -1681,9 +1681,7 @@ module Make (Syntax : SYNTAX) = struct
 
     let impl ~infos src =
       let syntax_locs = Source_info.Syntax.highlight src in
-      let lines_locs = Source_info.Lines.split src in
       let infos = List.rev_append infos syntax_locs in
-      let infos = List.rev_append infos lines_locs in
       doc_of_poses src infos
   end
 

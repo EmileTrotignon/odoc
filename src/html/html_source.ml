@@ -127,6 +127,11 @@ let tag_of_token (tok : Parser.token) =
   | AMPERSAND -> "AMPERSAND"
   | AMPERAMPER -> "AMPERAMPER"
 
+let id_of_line = Printf.sprintf "L%d"
+
+let id_of_relative_line (rel_i, (rel_name : string)) =
+  Printf.sprintf "RL%i_%i" rel_i (Hashtbl.hash rel_name)
+
 let html_of_doc docs =
   let open Tyxml.Html in
   let a :
@@ -146,10 +151,17 @@ let html_of_doc docs =
         let children = List.map doc_to_html docs in
         match info with
         | Token tok -> span ~a:[ a_class [ tag_of_token tok ] ] children
-        | Line l ->
+        | Line { absolute; relative = Some relative } ->
+            let id_relative = a_id (id_of_relative_line relative) in
+            let id_absolute = a_id (id_of_line absolute) in
+            let line_class = a_class [ "source_line" ] in
             span
-              ~a:[ a_id (Printf.sprintf "L%d" l); a_class [ "source_line" ] ]
-              children
+              ~a:[ id_relative; line_class ]
+              [ span ~a:[ id_absolute; line_class ] children ]
+        | Line { absolute; relative = None } ->
+            let id_absolute = a_id (id_of_line absolute) in
+            let line_class = a_class [ "source_line" ] in
+            span ~a:[ id_absolute; line_class ] children
         | Local_jmp (Occurence lbl) -> a ~a:[ a_href ("#def-" ^ lbl) ] children
         | Local_jmp (Def lbl) -> span ~a:[ a_id ("def-" ^ lbl) ] children)
   in

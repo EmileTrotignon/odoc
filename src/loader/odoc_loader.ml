@@ -42,12 +42,12 @@ exception Not_an_interface
 
 exception Make_root_error of string
 
-let read_cmt_infos ~filename () =
+let read_cmt_infos ~src ~filename () =
   match Cmt_format.read_cmt filename with
   | exception Cmi_format.Error _ -> raise Corrupted
   | cmt_info -> (
       match cmt_info.cmt_annots with
-      | Implementation _ -> Compatshape.of_cmt cmt_info
+      | Implementation _ -> Compatshape.of_cmt ~src cmt_info
       | _ -> raise Not_an_implementation)
 
 let make_compilation_unit ~make_root ~imports ~interface ?sourcefile ~name ~id
@@ -114,7 +114,7 @@ let read_cmti ~make_root ~parent ~filename () =
             ~interface ~sourcefile ~name ~id ?canonical sg)
   | _ -> raise Not_an_interface
 
-let read_cmt ~make_root ~parent ~filename () =
+let read_cmt ~src ~make_root ~parent ~filename () =
   match Cmt_format.read_cmt filename with
   | exception Cmi_format.Error (Not_an_interface _) ->
       raise Not_an_implementation
@@ -160,7 +160,7 @@ let read_cmt ~make_root ~parent ~filename () =
           let id, sg, canonical = Cmt.read_implementation parent name impl in
           ( compilation_unit_of_sig ~make_root ~imports ~interface ~sourcefile
               ~name ~id ?canonical sg,
-            Compatshape.of_cmt cmt_info )
+            Compatshape.of_cmt ~src cmt_info )
       | _ -> raise Not_an_implementation)
 
 let read_cmi ~make_root ~parent ~filename () =
@@ -192,8 +192,8 @@ let read_cmt_infos ~filename = wrap_errors ~filename (read_cmt_infos ~filename)
 let read_cmti ~make_root ~parent ~filename =
   wrap_errors ~filename (read_cmti ~make_root ~parent ~filename)
 
-let read_cmt ~make_root ~parent ~filename =
-  wrap_errors ~filename (read_cmt ~make_root ~parent ~filename)
+let read_cmt ~src ~make_root ~parent ~filename =
+  wrap_errors ~filename (read_cmt ~src ~make_root ~parent ~filename)
 
 let read_cmi ~make_root ~parent ~filename =
   wrap_errors ~filename (read_cmi ~make_root ~parent ~filename)

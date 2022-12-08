@@ -14,6 +14,7 @@ val read_string :
   (Comment.docs_or_stop, Error.t) result Error.with_warnings
 
 val read_cmt_infos :
+  src:string ->
   filename:string ->
   ((Compatshape.impl_shape * Source_info.Types.infos) option, Error.t) result
   Error.with_warnings
@@ -26,6 +27,7 @@ val read_cmti :
   (Lang.Compilation_unit.t, Error.t) result Error.with_warnings
 
 val read_cmt :
+  src:string ->
   make_root:make_root ->
   parent:Identifier.ContainerPage.t option ->
   filename:string ->

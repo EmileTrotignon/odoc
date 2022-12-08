@@ -98,7 +98,7 @@ let resolve_imports resolver imports =
     imports
 
 (** Raises warnings and errors. *)
-let resolve_and_substitute ~resolver ~make_root ~impl_source ~intf_source
+let resolve_and_substitute ~resolver ~make_root ~impl_source ~impl_content ~intf_source
     (parent : Paths.Identifier.ContainerPage.t option) input_file input_type =
   let filename = Fs.File.to_string input_file in
   (* [impl_shape] is used to lookup locations in the implementation. It is
@@ -117,7 +117,7 @@ let resolve_and_substitute ~resolver ~make_root ~impl_source ~intf_source
         in
         (unit, impl_shape)
     | `Cmt ->
-        Odoc_loader.read_cmt ~make_root ~parent ~filename
+        Odoc_loader.read_cmt ~src:impl_content ~make_root ~parent ~filename
         |> Error.raise_errors_and_warnings
     | `Cmi ->
         let unit =
@@ -263,8 +263,8 @@ let handle_file_ext = function
   | _ ->
       Error (`Msg "Unknown extension, expected one of: cmti, cmt, cmi or mld.")
 
-let compile ~resolver ~parent_cli_spec ~hidden ~children ~output
-    ~warnings_options ~impl_source ~intf_source input =
+let compile ~resolver ~parent_cli_spec ~hidden ~children ~output 
+    ~warnings_options ~impl_source ~impl_content ~intf_source input =
   parent resolver parent_cli_spec >>= fun parent_spec ->
   let ext = Fs.File.get_ext input in
   if ext = ".mld" then
@@ -281,7 +281,7 @@ let compile ~resolver ~parent_cli_spec ~hidden ~children ~output
     let make_root = root_of_compilation_unit ~parent_spec ~hidden ~output in
     let result =
       Error.catch_errors_and_warnings (fun () ->
-          resolve_and_substitute ~resolver ~make_root ~impl_source ~intf_source
+          resolve_and_substitute ~resolver ~make_root ~impl_source ~intf_source ~impl_content
             parent input input_type)
     in
     (* Extract warnings to write them into the output file *)
