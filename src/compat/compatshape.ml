@@ -59,13 +59,13 @@ let lookup_def impl_shape id =
 let of_cmt ~src (cmt : Cmt_format.cmt_infos)  =
   (* TODO fix default *)
   let filename = cmt.cmt_sourcefile in
-  match cmt.cmt_impl_shape with
-  | Some impl_shape ->
+  match cmt.cmt_impl_shape, src with
+  | Some impl_shape, Some src ->
     let line_info = Source_info.Lines.split ~filename src in
     let source_info = Source_info.Local_jmp.jmp_to_def cmt in
       Some ({ uid_to_loc = cmt.cmt_uid_to_loc; impl_shape },
-        List.rev_append  line_info source_info)
-  | None -> None
+        List.rev_append line_info source_info)
+  | _ -> None
 
 #else
 

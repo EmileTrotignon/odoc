@@ -29,11 +29,11 @@ type parent_cli_spec =
   | CliNoparent
 
 (** Raises warnings and errors. *)
-let lookup_implementation_of_cmti intf_file =
+let lookup_implementation_of_cmti ~src intf_file =
   let input_file = Fs.File.set_ext ".cmt" intf_file in
   if Fs.File.exists input_file then
     let filename = Fs.File.to_string input_file in
-    Odoc_loader.read_cmt_infos ~filename |> Error.raise_errors_and_warnings
+    Odoc_loader.read_cmt_infos ~src ~filename |> Error.raise_errors_and_warnings
   else (
     Error.raise_warning ~non_fatal:true
       (Error.filename_only
@@ -98,12 +98,15 @@ let resolve_imports resolver imports =
     imports
 
 (** Raises warnings and errors. *)
-let resolve_and_substitute ~resolver ~make_root ~impl_source ~impl_content ~intf_source
+let resolve_and_substitute ~resolver ~make_root ~impl_source ~intf_source
     (parent : Paths.Identifier.ContainerPage.t option) input_file input_type =
   let filename = Fs.File.to_string input_file in
   (* [impl_shape] is used to lookup locations in the implementation. It is
      useless if no source code is given on command line. *)
   let should_read_impl_shape = impl_source <> None in
+  let impl_content, intf_content =
+    (read_source_file_opt impl_source, read_source_file_opt intf_source)
+  in
   let unit, cmt_infos =
     match input_type with
     | `Cmti ->
@@ -112,7 +115,7 @@ let resolve_and_substitute ~resolver ~make_root ~impl_source ~impl_content ~intf
           |> Error.raise_errors_and_warnings
         and impl_shape =
           if should_read_impl_shape then
-            lookup_implementation_of_cmti input_file
+            lookup_implementation_of_cmti ~src:impl_content input_file
           else None
         in
         (unit, impl_shape)
@@ -128,11 +131,7 @@ let resolve_and_substitute ~resolver ~make_root ~impl_source ~impl_content ~intf
   in
   let impl_shape = Option.map fst cmt_infos in
   let sources =
-    match
-      ( cmt_infos,
-        read_source_file_opt impl_source,
-        read_source_file_opt intf_source )
-    with
+    match (cmt_infos, impl_content, intf_content) with
     | None, _, _ | _, None, None -> []
     | Some (_, impl_info), impl_source, intf_source ->
         let parent = (unit.id :> Paths.Identifier.Module.t) in
@@ -263,8 +262,8 @@ let handle_file_ext = function
   | _ ->
       Error (`Msg "Unknown extension, expected one of: cmti, cmt, cmi or mld.")
 
-let compile ~resolver ~parent_cli_spec ~hidden ~children ~output 
-    ~warnings_options ~impl_source ~impl_content ~intf_source input =
+let compile ~resolver ~parent_cli_spec ~hidden ~children ~output
+    ~warnings_options ~impl_source ~intf_source input =
   parent resolver parent_cli_spec >>= fun parent_spec ->
   let ext = Fs.File.get_ext input in
   if ext = ".mld" then
@@ -281,7 +280,7 @@ let compile ~resolver ~parent_cli_spec ~hidden ~children ~output
     let make_root = root_of_compilation_unit ~parent_spec ~hidden ~output in
     let result =
       Error.catch_errors_and_warnings (fun () ->
-          resolve_and_substitute ~resolver ~make_root ~impl_source ~intf_source ~impl_content
+          resolve_and_substitute ~resolver ~make_root ~impl_source ~intf_source
             parent input input_type)
     in
     (* Extract warnings to write them into the output file *)
