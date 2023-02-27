@@ -1,5 +1,6 @@
 module M : sig
     type t = Foo
-  end
+    (** {!constructor-Foo} *)
+end
   
-  (** {!constructor:M.Foo} {!constructor:M.t.Foo} *)
+  (** {!module-M.constructor-Foo} {!M.t.constructor-Foo} *)

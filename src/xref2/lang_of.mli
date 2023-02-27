@@ -209,7 +209,7 @@ val type_decl_representation :
 
 val type_decl_constructor :
   maps ->
-  Identifier.Type.t ->
+  Identifier.Parent.t ->
   Component.TypeDecl.Constructor.t ->
   Odoc_model.Lang.TypeDecl.Constructor.t
 

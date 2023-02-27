@@ -4263,7 +4263,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "class-foo.constructor-Bar" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 2-11:\nExpected 'type-' or an unqualified reference."
+            "File \"f.ml\", line 1, characters 2-11:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -4276,7 +4276,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "class-type-foo.constructor-Bar" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 2-16:\nExpected 'type-' or an unqualified reference."
+            "File \"f.ml\", line 1, characters 2-16:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -4289,7 +4289,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "constructor-Foo.constructor-Bar" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 2-17:\nExpected 'type-' or an unqualified reference."
+            "File \"f.ml\", line 1, characters 2-17:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -4302,7 +4302,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "exception-Foo.constructor-Bar" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 2-15:\nExpected 'type-' or an unqualified reference."
+            "File \"f.ml\", line 1, characters 2-15:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -4315,7 +4315,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "extension-Foo.constructor-Bar" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 2-15:\nExpected 'type-' or an unqualified reference."
+            "File \"f.ml\", line 1, characters 2-15:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -4328,7 +4328,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "field-foo.constructor-Bar" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 2-11:\nExpected 'type-' or an unqualified reference."
+            "File \"f.ml\", line 1, characters 2-11:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -4341,7 +4341,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "section-foo.constructor-Bar" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 2-13:\nExpected 'type-' or an unqualified reference."
+            "File \"f.ml\", line 1, characters 2-13:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -4358,7 +4358,7 @@ let%expect_test _ =
             }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 2-23:\nExpected 'type-' or an unqualified reference."
+            "File \"f.ml\", line 1, characters 2-23:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -4371,7 +4371,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "method-foo.constructor-Bar" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 2-12:\nExpected 'type-' or an unqualified reference."
+            "File \"f.ml\", line 1, characters 2-12:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -4381,11 +4381,18 @@ let%expect_test _ =
         {|
         {
           "value": [
-            { "`Paragraph": [ { "`Code_span": "module-Foo.constructor-Bar" } ] }
+            {
+              "`Paragraph": [
+                {
+                  "`Reference": [
+                    { "`Constructor": [ { "`Root": [ "Foo", "`TModule" ] }, "Bar" ] },
+                    []
+                  ]
+                }
+              ]
+            }
           ],
-          "warnings": [
-            "File \"f.ml\", line 1, characters 2-12:\nExpected 'type-' or an unqualified reference."
-          ]
+          "warnings": []
         } |}]
 
     let constructor_in_module_type =
@@ -4394,11 +4401,23 @@ let%expect_test _ =
         {|
         {
           "value": [
-            { "`Paragraph": [ { "`Code_span": "module-type-Foo.constructor-Bar" } ] }
+            {
+              "`Paragraph": [
+                {
+                  "`Reference": [
+                    {
+                      "`Constructor": [
+                        { "`Root": [ "Foo", "`TModuleType" ] },
+                        "Bar"
+                      ]
+                    },
+                    []
+                  ]
+                }
+              ]
+            }
           ],
-          "warnings": [
-            "File \"f.ml\", line 1, characters 2-17:\nExpected 'type-' or an unqualified reference."
-          ]
+          "warnings": []
         } |}]
 
     let constructor_in_page =
@@ -4410,7 +4429,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "page-foo.constructor-Bar" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 2-10:\nExpected 'type-' or an unqualified reference."
+            "File \"f.ml\", line 1, characters 2-10:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -4423,7 +4442,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "val-foo.constructor-Bar" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 2-9:\nExpected 'type-' or an unqualified reference."
+            "File \"f.ml\", line 1, characters 2-9:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -4486,7 +4505,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "Foo.class-bar.constructor-Baz" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 6-15:\nExpected 'type-' or an unqualified reference."
+            "File \"f.ml\", line 1, characters 6-15:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -4503,7 +4522,7 @@ let%expect_test _ =
             }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 6-20:\nExpected 'type-' or an unqualified reference."
+            "File \"f.ml\", line 1, characters 6-20:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -4520,7 +4539,7 @@ let%expect_test _ =
             }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 6-21:\nExpected 'type-' or an unqualified reference."
+            "File \"f.ml\", line 1, characters 6-21:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -4535,7 +4554,7 @@ let%expect_test _ =
             }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 6-19:\nExpected 'type-' or an unqualified reference."
+            "File \"f.ml\", line 1, characters 6-19:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -4550,7 +4569,7 @@ let%expect_test _ =
             }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 6-19:\nExpected 'type-' or an unqualified reference."
+            "File \"f.ml\", line 1, characters 6-19:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -4563,7 +4582,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "foo.field-bar.constructor-Baz" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 6-15:\nExpected 'type-' or an unqualified reference."
+            "File \"f.ml\", line 1, characters 6-15:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -4576,7 +4595,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "foo.section-bar.constructor-Baz" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 6-17:\nExpected 'type-' or an unqualified reference."
+            "File \"f.ml\", line 1, characters 6-17:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -4593,7 +4612,7 @@ let%expect_test _ =
             }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 6-27:\nExpected 'type-' or an unqualified reference."
+            "File \"f.ml\", line 1, characters 6-27:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -4606,7 +4625,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "foo.method-bar.constructor-Baz" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 6-16:\nExpected 'type-' or an unqualified reference."
+            "File \"f.ml\", line 1, characters 6-16:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -4616,11 +4635,23 @@ let%expect_test _ =
         {|
         {
           "value": [
-            { "`Paragraph": [ { "`Code_span": "Foo.module-Bar.constructor-Baz" } ] }
+            {
+              "`Paragraph": [
+                {
+                  "`Reference": [
+                    {
+                      "`Constructor": [
+                        { "`Module": [ { "`Root": [ "Foo", "`TUnknown" ] }, "Bar" ] },
+                        "Baz"
+                      ]
+                    },
+                    []
+                  ]
+                }
+              ]
+            }
           ],
-          "warnings": [
-            "File \"f.ml\", line 1, characters 6-16:\nExpected 'type-' or an unqualified reference."
-          ]
+          "warnings": []
         } |}]
 
     let constructor_in_module_type_nested =
@@ -4631,13 +4662,26 @@ let%expect_test _ =
           "value": [
             {
               "`Paragraph": [
-                { "`Code_span": "Foo.module-type-Bar.constructor-Baz" }
+                {
+                  "`Reference": [
+                    {
+                      "`Constructor": [
+                        {
+                          "`ModuleType": [
+                            { "`Root": [ "Foo", "`TUnknown" ] },
+                            "Bar"
+                          ]
+                        },
+                        "Baz"
+                      ]
+                    },
+                    []
+                  ]
+                }
               ]
             }
           ],
-          "warnings": [
-            "File \"f.ml\", line 1, characters 6-21:\nExpected 'type-' or an unqualified reference."
-          ]
+          "warnings": []
         } |}]
 
     let constructor_in_page_nested =
@@ -4649,7 +4693,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "foo.page-bar.constructor-Baz" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 6-14:\nExpected 'type-' or an unqualified reference."
+            "File \"f.ml\", line 1, characters 6-14:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -4662,7 +4706,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "Foo.val-bar.constructor-Baz" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 6-13:\nExpected 'type-' or an unqualified reference."
+            "File \"f.ml\", line 1, characters 6-13:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -4762,19 +4806,10 @@ let%expect_test _ =
       [%expect
         {|
         {
-          "value": [
-            {
-              "`Paragraph": [
-                {
-                  "`Reference": [
-                    { "`Field": [ { "`Root": [ "foo", "`TClass" ] }, "bar" ] },
-                    []
-                  ]
-                }
-              ]
-            }
-          ],
-          "warnings": []
+          "value": [ { "`Paragraph": [ { "`Code_span": "class-foo.field-bar" } ] } ],
+          "warnings": [
+            "File \"f.ml\", line 1, characters 2-11:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
+          ]
         } |}]
 
     let field_in_class_type =
@@ -4783,18 +4818,11 @@ let%expect_test _ =
         {|
         {
           "value": [
-            {
-              "`Paragraph": [
-                {
-                  "`Reference": [
-                    { "`Field": [ { "`Root": [ "foo", "`TClassType" ] }, "bar" ] },
-                    []
-                  ]
-                }
-              ]
-            }
+            { "`Paragraph": [ { "`Code_span": "class-type-foo.field-bar" } ] }
           ],
-          "warnings": []
+          "warnings": [
+            "File \"f.ml\", line 1, characters 2-16:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
+          ]
         } |}]
 
     let field_in_constructor =
@@ -4806,7 +4834,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "constructor-Foo.field-bar" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 2-17:\nExpected 'module-', 'module-type-', 'type-', 'class-', 'class-type-', or an unqualified reference."
+            "File \"f.ml\", line 1, characters 2-17:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -4819,7 +4847,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "exception-Foo.field-bar" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 2-15:\nExpected 'module-', 'module-type-', 'type-', 'class-', 'class-type-', or an unqualified reference."
+            "File \"f.ml\", line 1, characters 2-15:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -4832,7 +4860,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "extension-Foo.field-bar" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 2-15:\nExpected 'module-', 'module-type-', 'type-', 'class-', 'class-type-', or an unqualified reference."
+            "File \"f.ml\", line 1, characters 2-15:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -4843,7 +4871,7 @@ let%expect_test _ =
         {
           "value": [ { "`Paragraph": [ { "`Code_span": "field-foo.field-bar" } ] } ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 2-11:\nExpected 'module-', 'module-type-', 'type-', 'class-', 'class-type-', or an unqualified reference."
+            "File \"f.ml\", line 1, characters 2-11:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -4856,7 +4884,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "section-foo.field-bar" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 2-13:\nExpected 'module-', 'module-type-', 'type-', 'class-', 'class-type-', or an unqualified reference."
+            "File \"f.ml\", line 1, characters 2-13:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -4869,7 +4897,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "instance-variable-foo.field-bar" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 2-23:\nExpected 'module-', 'module-type-', 'type-', 'class-', 'class-type-', or an unqualified reference."
+            "File \"f.ml\", line 1, characters 2-23:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -4880,7 +4908,7 @@ let%expect_test _ =
         {
           "value": [ { "`Paragraph": [ { "`Code_span": "method-foo.field-bar" } ] } ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 2-12:\nExpected 'module-', 'module-type-', 'type-', 'class-', 'class-type-', or an unqualified reference."
+            "File \"f.ml\", line 1, characters 2-12:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -4891,7 +4919,7 @@ let%expect_test _ =
         {
           "value": [ { "`Paragraph": [ { "`Code_span": "page-foo.field-bar" } ] } ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 2-10:\nExpected 'module-', 'module-type-', 'type-', 'class-', 'class-type-', or an unqualified reference."
+            "File \"f.ml\", line 1, characters 2-10:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -4902,7 +4930,7 @@ let%expect_test _ =
         {
           "value": [ { "`Paragraph": [ { "`Code_span": "val-foo.field-bar" } ] } ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 2-9:\nExpected 'module-', 'module-type-', 'type-', 'class-', 'class-type-', or an unqualified reference."
+            "File \"f.ml\", line 1, characters 2-9:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -5017,23 +5045,11 @@ let%expect_test _ =
         {|
         {
           "value": [
-            {
-              "`Paragraph": [
-                {
-                  "`Reference": [
-                    {
-                      "`Field": [
-                        { "`Class": [ { "`Root": [ "Foo", "`TUnknown" ] }, "bar" ] },
-                        "baz"
-                      ]
-                    },
-                    []
-                  ]
-                }
-              ]
-            }
+            { "`Paragraph": [ { "`Code_span": "Foo.class-bar.field-baz" } ] }
           ],
-          "warnings": []
+          "warnings": [
+            "File \"f.ml\", line 1, characters 6-15:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
+          ]
         } |}]
 
     let field_in_class_type_nested =
@@ -5042,28 +5058,11 @@ let%expect_test _ =
         {|
         {
           "value": [
-            {
-              "`Paragraph": [
-                {
-                  "`Reference": [
-                    {
-                      "`Field": [
-                        {
-                          "`ClassType": [
-                            { "`Root": [ "Foo", "`TUnknown" ] },
-                            "bar"
-                          ]
-                        },
-                        "baz"
-                      ]
-                    },
-                    []
-                  ]
-                }
-              ]
-            }
+            { "`Paragraph": [ { "`Code_span": "Foo.class-type-bar.field-baz" } ] }
           ],
-          "warnings": []
+          "warnings": [
+            "File \"f.ml\", line 1, characters 6-20:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
+          ]
         } |}]
 
     let field_in_constructor_nested =
@@ -5075,7 +5074,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "Foo.constructor-bar.field-baz" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 6-21:\nExpected 'module-', 'module-type-', 'type-', 'class-', 'class-type-', or an unqualified reference."
+            "File \"f.ml\", line 1, characters 6-21:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -5088,7 +5087,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "Foo.exception-Bar.field-baz" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 6-19:\nExpected 'module-', 'module-type-', 'type-', 'class-', 'class-type-', or an unqualified reference."
+            "File \"f.ml\", line 1, characters 6-19:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -5101,7 +5100,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "Foo.extension-Bar.field-baz" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 6-19:\nExpected 'module-', 'module-type-', 'type-', 'class-', 'class-type-', or an unqualified reference."
+            "File \"f.ml\", line 1, characters 6-19:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -5114,7 +5113,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "Foo.field-bar.field-baz" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 6-15:\nExpected 'module-', 'module-type-', 'type-', 'class-', 'class-type-', or an unqualified reference."
+            "File \"f.ml\", line 1, characters 6-15:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -5127,7 +5126,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "foo.section-bar.field-baz" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 6-17:\nExpected 'module-', 'module-type-', 'type-', 'class-', 'class-type-', or an unqualified reference."
+            "File \"f.ml\", line 1, characters 6-17:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -5144,7 +5143,7 @@ let%expect_test _ =
             }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 6-27:\nExpected 'module-', 'module-type-', 'type-', 'class-', 'class-type-', or an unqualified reference."
+            "File \"f.ml\", line 1, characters 6-27:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -5157,7 +5156,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "foo.method-bar.field-baz" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 6-16:\nExpected 'module-', 'module-type-', 'type-', 'class-', 'class-type-', or an unqualified reference."
+            "File \"f.ml\", line 1, characters 6-16:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -5170,7 +5169,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "foo.page-bar.field-baz" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 6-14:\nExpected 'module-', 'module-type-', 'type-', 'class-', 'class-type-', or an unqualified reference."
+            "File \"f.ml\", line 1, characters 6-14:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -5183,7 +5182,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "Foo.val-bar.field-baz" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 6-13:\nExpected 'module-', 'module-type-', 'type-', 'class-', 'class-type-', or an unqualified reference."
+            "File \"f.ml\", line 1, characters 6-13:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -6195,23 +6194,11 @@ let%expect_test _ =
         {|
         {
           "value": [
-            {
-              "`Paragraph": [
-                {
-                  "`Reference": [
-                    {
-                      "`Field": [
-                        { "`Dot": [ { "`Root": [ "foo", "`TClass" ] }, "bar" ] },
-                        "baz"
-                      ]
-                    },
-                    []
-                  ]
-                }
-              ]
-            }
+            { "`Paragraph": [ { "`Code_span": "class-foo.bar.field-baz" } ] }
           ],
-          "warnings": []
+          "warnings": [
+            "File \"f.ml\", line 1, characters 2-11:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
+          ]
         } |}]
 
     let inner_parent_something_in_page =
@@ -6223,7 +6210,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "page-foo.bar.field-baz" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 2-10:\nExpected 'module-', 'module-type-', 'type-', 'class-', 'class-type-', or an unqualified reference."
+            "File \"f.ml\", line 1, characters 2-10:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -6356,23 +6343,11 @@ let%expect_test _ =
         {|
         {
           "value": [
-            {
-              "`Paragraph": [
-                {
-                  "`Reference": [
-                    {
-                      "`Field": [
-                        { "`Class": [ { "`Root": [ "Foo", "`TModule" ] }, "bar" ] },
-                        "baz"
-                      ]
-                    },
-                    []
-                  ]
-                }
-              ]
-            }
+            { "`Paragraph": [ { "`Code_span": "module-Foo.class-bar.field-baz" } ] }
           ],
-          "warnings": []
+          "warnings": [
+            "File \"f.ml\", line 1, characters 13-22:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
+          ]
         } |}]
 
     let inner_parent_class_in_class =
@@ -6384,7 +6359,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "class-foo.class-bar.field-baz" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 2-11:\nExpected 'module-', 'module-type-', or an unqualified reference."
+            "File \"f.ml\", line 1, characters 12-21:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -6396,23 +6371,13 @@ let%expect_test _ =
           "value": [
             {
               "`Paragraph": [
-                {
-                  "`Reference": [
-                    {
-                      "`Field": [
-                        {
-                          "`ClassType": [ { "`Root": [ "Foo", "`TModule" ] }, "bar" ]
-                        },
-                        "baz"
-                      ]
-                    },
-                    []
-                  ]
-                }
+                { "`Code_span": "module-Foo.class-type-bar.field-baz" }
               ]
             }
           ],
-          "warnings": []
+          "warnings": [
+            "File \"f.ml\", line 1, characters 13-27:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
+          ]
         } |}]
 
     let inner_parent_class_type_in_class =
@@ -6428,7 +6393,7 @@ let%expect_test _ =
             }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 2-11:\nExpected 'module-', 'module-type-', or an unqualified reference."
+            "File \"f.ml\", line 1, characters 12-26:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -6722,7 +6687,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "page-foo.bar.method-baz" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 2-10:\nExpected 'module-', 'module-type-', 'type-', 'class-', 'class-type-', or an unqualified reference."
+            "File \"f.ml\", line 1, characters 2-10:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -6842,7 +6807,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "page-foo.bar.type-baz" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 2-10:\nExpected 'module-', 'module-type-', 'type-', 'class-', 'class-type-', or an unqualified reference."
+            "File \"f.ml\", line 1, characters 2-10:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
@@ -6965,7 +6930,7 @@ let%expect_test _ =
             { "`Paragraph": [ { "`Code_span": "page-foo.bar.constructor-Baz" } ] }
           ],
           "warnings": [
-            "File \"f.ml\", line 1, characters 2-10:\nExpected 'module-', 'module-type-', 'type-', 'class-', 'class-type-', or an unqualified reference."
+            "File \"f.ml\", line 1, characters 2-10:\nExpected 'module-', 'module-type-', 'type-', or an unqualified reference."
           ]
         } |}]
 
