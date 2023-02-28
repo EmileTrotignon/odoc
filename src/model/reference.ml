@@ -204,9 +204,7 @@ let parse whole_reference_location s :
     | next_token :: tokens -> (
         match kind with
         | `TUnknown ->
-            `Dot
-              ( (parent next_token tokens :> LabelParent.t),
-                identifier )
+            `Dot ((parent next_token tokens :> LabelParent.t), identifier)
         | `TModule ->
             `Module (signature next_token tokens, ModuleName.make_std identifier)
         | `TModuleType ->
@@ -215,8 +213,7 @@ let parse whole_reference_location s :
         | _ ->
             expected [ "module"; "module-type" ] location
             |> Error.raise_exception)
-  and parent (kind, identifier, location) tokens :
-      Parent.t =
+  and parent (kind, identifier, location) tokens : Parent.t =
     let kind = match_reference_kind location kind in
     match tokens with
     | [] -> (
@@ -229,9 +226,7 @@ let parse whole_reference_location s :
     | next_token :: tokens -> (
         match kind with
         | `TUnknown ->
-            `Dot
-              ( (parent next_token tokens :> LabelParent.t),
-                identifier )
+            `Dot ((parent next_token tokens :> LabelParent.t), identifier)
         | `TModule ->
             `Module (signature next_token tokens, ModuleName.make_std identifier)
         | `TModuleType ->
@@ -256,9 +251,7 @@ let parse whole_reference_location s :
     | next_token :: tokens -> (
         match kind with
         | `TUnknown ->
-            `Dot
-              ( (parent next_token tokens :> LabelParent.t),
-                identifier )
+            `Dot ((parent next_token tokens :> LabelParent.t), identifier)
         | `TClass ->
             `Class (signature next_token tokens, ClassName.make_std identifier)
         | `TClassType ->
@@ -340,12 +333,9 @@ let parse whole_reference_location s :
             `Type (signature next_token tokens, TypeName.make_std identifier)
         | `TConstructor ->
             `Constructor
-              ( parent next_token tokens,
-                ConstructorName.make_std identifier )
+              (parent next_token tokens, ConstructorName.make_std identifier)
         | `TField ->
-            `Field
-              ( parent next_token tokens,
-                FieldName.make_std identifier )
+            `Field (parent next_token tokens, FieldName.make_std identifier)
         | `TExtension ->
             `Extension
               (signature next_token tokens, ExtensionName.make_std identifier)
