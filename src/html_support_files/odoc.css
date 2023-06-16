@@ -576,6 +576,12 @@ div.odoc-spec,
   margin-bottom: 2em;
 }
 
+.odoc-include {
+  /* Otherwise it will appear above search results */
+  z-index: -1;
+  position: relative;
+}
+
 .spec.type .variant p,
 .spec.type .record p {
   margin: 5px;
