@@ -20,45 +20,60 @@ document.querySelector(".search-bar").addEventListener("input", (ev) => {
 
 worker.onmessage = (e) => {
   let results = e.data;
-  let search_result = document.querySelector(".search-result");
+  let search_result = document.querySelector(".search-result-inner");
   search_result.innerHTML = "";
   let f = (entry) => {
+    /* entry */
     let container = document.createElement("a");
     container.href = base_url + entry.url;
     container.classList.add("search-entry", entry.kind.replace(" ", "-"));
-    let title = document.createElement("code");
-    title.classList.add("entry-title");
-    let kind = document.createElement("span");
+    search_result.appendChild(container);
+
+    /* kind */
+    let kind = document.createElement("code");
     kind.innerText = entry.kind;
     kind.classList.add("entry-kind");
+    container.appendChild(kind);
+
+    /* content */
+    /*let content = document.createElement("div");
+    content.classList.add("entry-content");
+    container.appendChild(content);
+    */
+
+    /* title */
+    let title = document.createElement("code");
+    title.classList.add("entry-title");
+    container.appendChild(title);
+
+    /* name */
     let prefixname = document.createElement("span");
     prefixname.classList.add("prefix-name");
     prefixname.innerText =
       entry.id
         .slice(0, entry.id.length - 1)
         .join(".") + (entry.id.length > 1 && entry.name != "" ? "." : "");
-
-    title.appendChild(kind);
     title.appendChild(prefixname);
 
     let name = document.createElement("span");
     name.classList.add("entry-name");
     name.innerText = entry.id[entry.id.length - 1];
     title.appendChild(name);
+    
+    /* rhs */
     if (typeof entry.rhs !== typeof undefined) {
       let rhs = document.createElement("code");
       rhs.classList.add("entry-rhs");
       rhs.innerHTML = entry.rhs
       title.appendChild(rhs);
     }
+
+    /* comment */
     let comment = document.createElement("div");
     comment.innerHTML = entry.doc;
     comment.classList.add("entry-comment");
-
-    container.appendChild(title);
     container.appendChild(comment);
 
-    search_result.appendChild(container);
   };
   results.map(f);
 };
