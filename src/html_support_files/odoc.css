@@ -366,6 +366,7 @@ a:hover {
 
 *:hover>a.anchor {
   visibility: visible;
+  z-index: -1;
 }
 
 a.anchor:before {
