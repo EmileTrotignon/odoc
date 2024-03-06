@@ -171,7 +171,11 @@ end =
   Item
 
 and Page : sig
-  type context = TODO
+  type context = {
+    url : Url.t;
+    parent : context option;
+    children : (Inline.t * Url.t option) list;
+  }
 
   type t = {
     preamble : Item.t list;

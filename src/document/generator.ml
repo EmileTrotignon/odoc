@@ -96,7 +96,7 @@ let make_expansion_page ~source_anchor url comments items =
   let comment = List.concat comments in
   let preamble, items = prepare_preamble comment items in
   (* TODO: Construct context while constructing expansion pages. *)
-  { Page.preamble; context = Some Page.TODO; items; url; source_anchor }
+  { Page.preamble; context = None; items; url; source_anchor }
 
 include Generator_signatures
 
@@ -1817,7 +1817,49 @@ module Make (Syntax : SYNTAX) = struct
         in*)
       (*let title = Odoc_model.Names.PageName.to_string name in*)
       let context =
-        match t.context with Some _ -> Some Page.TODO | None -> None
+        match t.context with
+        | Some context ->
+            let open Odoc_model.Lang.Page.Context in
+            let rec loop { id; title = _; parent_context; children } =
+              let parent = Option.map loop parent_context in
+              let url =
+                Url.from_identifier ~stop_before:false
+                  (id :> Paths.Identifier.t)
+                |> Result.get_ok
+              in
+              let children =
+                List.map
+                  (fun child ->
+                    match child with
+                    | `Unresolved child ->
+                        let name =
+                          match child with
+                          | Odoc_model.Lang.Page.Page_child string
+                          | Module_child string
+                          | Source_tree_child string
+                          | Asset_child string ->
+                              string
+                        in
+                        (* todo make this into broken link like in unresolved function *)
+                        ([ inline @@ Text name ], None)
+                    | `Resolved ((id : Paths.Identifier.OdocId.t), title) ->
+                        let title =
+                          match title with
+                          | Some title -> Comment.link_content title
+                          | None ->
+                              [ inline @@ Text (Paths.Identifier.name id) ]
+                        in
+                        ( title,
+                          Url.from_identifier ~stop_before:false
+                            (id :> Paths.Identifier.Id.any)
+                          |> Result.get_ok |> Option.some ))
+                  children
+              in
+              Page.{ url; parent; children }
+            in
+
+            Some (loop context)
+        | None -> None
       in
       let url = Url.Path.from_identifier t.name in
       let preamble, items = Sectioning.docs t.content in

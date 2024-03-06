@@ -34,17 +34,6 @@ let check_is_empty msg = function [] -> Ok () | _ :: _ -> Error (`Msg msg)
 (** Used to disambiguate child references. *)
 let is_module_name n = String.length n > 0 && Char.Ascii.is_upper n.[0]
 
-(** The title of the page is a `{0 ..}` heading, if it's the first element of
-    the page. *)
-let title_of_page =
-  let open Comment in
-  let open Location_ in
-  fun (content : Comment.docs) ->
-    match content with
-    | { value = `Heading ({ heading_level = `Title; _ }, _, elts); _ } :: _ ->
-        Some (link_content_of_inline_elements elts)
-    | _ -> None
-
 (** Accepted child references:
 
     - [asset-foo] child is an arbitrary asset
@@ -87,9 +76,9 @@ let resolve_parent_page resolver f =
   let make_context (parent : Lang.Page.t) =
     {
       Lang.Page.Context.id = (parent.name :> Paths.Identifier.OdocId.t);
-      title = title_of_page parent.content;
+      title = Comment.title_of_page parent.content;
       parent_context = parent.context;
-      children = parent.children;
+      children = List.map (fun x -> `Unresolved x) parent.children;
     }
   in
   parse_parent_child_reference f >>= fun r ->

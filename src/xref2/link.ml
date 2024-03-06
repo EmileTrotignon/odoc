@@ -365,6 +365,34 @@ and open_ env parent = function
   | { Odoc_model__Lang.Open.doc; _ } as open_ ->
       { open_ with doc = comment_docs env parent doc }
 
+let rec unit_context env context =
+  let open Page.Context in
+  let parent_context = Option.map (unit_context env) context.parent_context in
+  let children =
+    List.map
+      (function
+        | `Resolved _ as x -> x
+        | `Unresolved child as unresolved -> (
+            let open Page in
+            match child with
+            | Page_child p -> (
+                match Env.lookup_page p env with
+                | None -> unresolved
+                | Some page ->
+                    let id = page.name in
+                    let title = Comment.title_of_page page.content in
+                    `Resolved ((id :> Paths.Identifier.OdocId.t), title))
+            | Module_child name -> (
+                match Env.lookup_unit name env with
+                | None | Some (Env.Forward_reference | Not_found) -> unresolved
+                | Some (Found module_) ->
+                    let id = module_.id in
+                    `Resolved ((id :> Paths.Identifier.OdocId.t), None))
+            | Source_tree_child _ | Asset_child _ ->
+                (* TODO: try and resolve these cases *) unresolved))
+      context.children
+  in
+  { context with parent_context; children }
 let rec unit env t =
   let open Compilation_unit in
   let content =
@@ -376,8 +404,9 @@ let rec unit env t =
           Module sg
       | Pack _ as p -> p
   in
+  let context = Option.map (unit_context env) t.context in
   let source_loc = source_loc env t.id t.source_loc in
-  { t with content; linked = true; source_loc }
+  { t with content; linked = true; source_loc; context }
 
 and value_ env parent t =
   let open Value in

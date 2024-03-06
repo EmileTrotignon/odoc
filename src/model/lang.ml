@@ -492,7 +492,10 @@ and Page : sig
       id : Identifier.OdocId.t;  (** Identifier of the parent page. *)
       title : Comment.link_content option;  (** Title of the parent page. *)
       parent_context : t option;
-      children : child list;
+      children :
+        [ `Unresolved of child
+        | `Resolved of Identifier.OdocId.t * Comment.link_content option ]
+        list;
     }
   end
 

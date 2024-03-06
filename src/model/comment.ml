@@ -128,3 +128,13 @@ let rec link_content_of_inline_element :
 
 and link_content_of_inline_elements l =
   l |> List.map link_content_of_inline_element |> List.concat
+
+(** The title of the page is a `{0 ..}` heading, if it's the first element of
+    the page. *)
+let title_of_page =
+  let open Location_ in
+  fun (content : docs) ->
+    match content with
+    | { value = `Heading ({ heading_level = `Title; _ }, _, elts); _ } :: _ ->
+        Some (link_content_of_inline_elements elts)
+    | _ -> None
