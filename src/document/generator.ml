@@ -1820,7 +1820,7 @@ module Make (Syntax : SYNTAX) = struct
         match t.context with
         | Some context ->
             let open Odoc_model.Lang.Page.Context in
-            let rec loop { id; title = _; parent_context; children } =
+            let rec loop { id; title; parent_context; children } =
               let parent = Option.map loop parent_context in
               let url =
                 Url.from_identifier ~stop_before:false
@@ -1855,9 +1855,9 @@ module Make (Syntax : SYNTAX) = struct
                           |> Result.get_ok |> Option.some ))
                   children
               in
-              Page.{ url; parent; children }
+              let title = Comment.link_content (Option.get title) in
+              Page.{ url; title; parent; children }
             in
-
             Some (loop context)
         | None -> None
       in

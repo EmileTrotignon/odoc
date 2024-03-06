@@ -22,7 +22,7 @@ let json_of_toc (toc : Types.toc list) : Utils.Json.json =
   let rec section (s : Types.toc) =
     `Object
       [
-        ("href", `String s.href);
+        ("href", `String (Option.value ~default:"" s.href));
         ("children", `Array (List.map section s.children));
       ]
   in

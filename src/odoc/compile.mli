@@ -35,7 +35,9 @@ val resolve_imports :
 val resolve_parent_page :
   Resolver.t ->
   string ->
-  ( Identifier.ContainerPage.t * Lang.Page.child list * Lang.Page.Context.t,
+  ( Identifier.ContainerPage.t
+    * Lang.Page.child list
+    * Lang.Page.Context.t option,
     [> msg ] )
   result
 (** Parse and resolve a parent reference. Returns the identifier of the parent

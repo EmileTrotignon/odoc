@@ -7,7 +7,12 @@
   $ odoc compile --parent page-root -I . module2.cmti
 
   $ odoc link -I . page-page1.odoc
+  $ odoc link -I . page-page2.odoc
+  $ odoc link -I . page-root.odoc
+
   $ odoc html-generate --indent -o html page-page1.odocl
+  $ odoc html-generate --indent -o html page-page2.odocl
+  $ odoc html-generate --indent -o html page-root.odocl
 
   $ cat html/test/root/page1.html
   <!DOCTYPE html>
@@ -28,13 +33,29 @@
      <h1 id="page1"><a href="#page1" class="anchor"></a>Page1</h1>
     </header>
     <nav class="odoc-toc">
-     <ul><li><a href="#heading-1">Heading 1</a></li>
-      <li><a href="#heading-2">Heading 2</a></li>
+     <ul>
+      <li><a href="index.html">Root</a>
+       <ul><li><a>Module2</a></li><li><a>Module1</a></li><li><a>page2</a></li>
+        <li><a>page1</a></li>
+        <li><a href="#">Page1</a>
+         <ul>
+          <li><a href="#heading-1">Heading 1</a>
+           <ul><li><a href="#heading-1.1">Heading 1.1</a></li></ul>
+          </li><li><a href="#heading-2">Heading 2</a></li>
+         </ul>
+        </li>
+       </ul>
+      </li>
      </ul>
     </nav>
     <div class="odoc-content">
      <h2 id="heading-1"><a href="#heading-1" class="anchor"></a>Heading 1</h2>
+     <h3 id="heading-1.1"><a href="#heading-1.1" class="anchor"></a>Heading 1.1
+     </h3>
      <h2 id="heading-2"><a href="#heading-2" class="anchor"></a>Heading 2</h2>
     </div>
    </body>
   </html>
+
+  $ cp -r html /tmp
+$ firefox /tmp/html/test/root/page1.html

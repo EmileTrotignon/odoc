@@ -173,6 +173,7 @@ end =
 and Page : sig
   type context = {
     url : Url.t;
+    title : Inline.t;
     parent : context option;
     children : (Inline.t * Url.t option) list;
   }

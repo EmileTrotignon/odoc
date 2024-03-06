@@ -73,24 +73,16 @@ let resolve_parent_page resolver f =
     | { Paths.Identifier.iv = `Page _; _ } as container -> Ok container
     | _ -> Error (`Msg "Specified parent is not a parent of this file")
   in
-  let make_context (parent : Lang.Page.t) =
-    {
-      Lang.Page.Context.id = (parent.name :> Paths.Identifier.OdocId.t);
-      title = Comment.title_of_page parent.content;
-      parent_context = parent.context;
-      children = List.map (fun x -> `Unresolved x) parent.children;
-    }
-  in
   parse_parent_child_reference f >>= fun r ->
   find_parent r >>= fun page ->
   extract_parent page.name >>= fun parent ->
-  Ok (parent, page.children, make_context page)
+  Ok (parent, page.children, page.context)
 
 let parent resolver parent_cli_spec =
   match parent_cli_spec with
   | CliParent f ->
       resolve_parent_page resolver f >>= fun (parent, children, context) ->
-      Ok (Explicit (parent, children), Some context)
+      Ok (Explicit (parent, children), context)
   | CliPackage package ->
       Ok
         ( Package (Paths.Identifier.Mk.page (None, PageName.make_std package)),
@@ -186,7 +178,7 @@ let page_name_of_output ~is_parent_explicit output =
      | _ -> ());
   root_name
 
-let mld ~parent_spec ~output ~children ~warnings_options ~context input =
+let mld ~parent_spec ~output ~children ~warnings_options ~parent_context input =
   List.fold_left
     (fun acc child_str ->
       match (acc, parse_parent_child_reference child_str) with
@@ -237,6 +229,15 @@ let mld ~parent_spec ~output ~children ~warnings_options ~context input =
     { Root.id = (name :> Paths.Identifier.OdocId.t); file; digest }
   in
   let resolve content =
+    let context =
+      Some
+        {
+          Lang.Page.Context.id = (name :> Paths.Identifier.OdocId.t);
+          title = Comment.title_of_page content;
+          parent_context;
+          children = List.map (fun x -> `Unresolved x) children;
+        }
+    in
     let page =
       Lang.Page.
         { name; root; context; children; content; digest; linked = false }
@@ -261,10 +262,10 @@ let handle_file_ext ext =
 
 let compile ~resolver ~parent_cli_spec ~hidden ~children ~output
     ~warnings_options input =
-  parent resolver parent_cli_spec >>= fun (parent_spec, context) ->
+  parent resolver parent_cli_spec >>= fun (parent_spec, parent_context) ->
   let ext = Fs.File.get_ext input in
   if ext = ".mld" then
-    mld ~parent_spec ~output ~warnings_options ~children ~context input
+    mld ~parent_spec ~output ~warnings_options ~children ~parent_context input
   else
     check_is_empty "Not expecting children (--child) when compiling modules."
       children
@@ -279,8 +280,8 @@ let compile ~resolver ~parent_cli_spec ~hidden ~children ~output
     let make_root = root_of_compilation_unit ~parent_spec ~hidden ~output in
     let result =
       Error.catch_errors_and_warnings (fun () ->
-          resolve_and_substitute ~resolver ~make_root ~hidden ~context parent
-            input input_type)
+          resolve_and_substitute ~resolver ~make_root ~hidden
+            ~context:parent_context parent input input_type)
     in
     (* Extract warnings to write them into the output file *)
     let _, warnings = Error.unpack_warnings result in

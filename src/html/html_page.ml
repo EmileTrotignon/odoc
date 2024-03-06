@@ -20,7 +20,11 @@ module Html = Tyxml.Html
 let html_of_toc toc =
   let open Types in
   let rec section (section : toc) =
-    let link = Html.a ~a:[ Html.a_href section.href ] section.title in
+    let link =
+      match section.href with
+      | Some href -> Html.a ~a:[ Html.a_href href ] section.title
+      | None -> Html.a section.title
+    in
     match section.children with [] -> [ link ] | cs -> [ link; sections cs ]
   and sections the_sections =
     the_sections

@@ -47,7 +47,7 @@ end
 module Toc : sig
   type t = one list
 
-  and one = { url : Url.t; text : Inline.t; children : t }
+  and one = { url : Url.t option; text : Inline.t; children : t }
 
   val compute :
     Url.Path.t ->
@@ -58,7 +58,7 @@ module Toc : sig
 end = struct
   type t = one list
 
-  and one = { url : Url.t; text : Inline.t; children : t }
+  and one = { url : Url.t option; text : Inline.t; children : t }
   let rec remove_links l =
     let open Inline in
     l
@@ -94,30 +94,25 @@ end = struct
   let node mkurl (anchor, text) children =
     { url = mkurl anchor; text; children }
 
-  let wrap_context (_context : Page.context option) ~path:_ children = children
-  (* let t = { url = context.url; text = context.title; children; } in *)
-  (* match context.parent with *)
-  (* | Some p -> *)
-  (*     let siblings = *)
-  (*       let siblings = *)
-  (*         List.map (fun sibling_path -> *)
-  (*             if sibling_path = context.url.page then *)
-  (*               t *)
-  (*             else *)
-  (*               node_of_path sibling_path *)
-  (*           ) context.siblings *)
-  (*       in *)
-  (*       if List.memq t siblings then siblings *)
-  (*       else t :: siblings *)
-  (*     in *)
-  (*     wrap_context p ~path *)
-
-  (* | None -> [ t ] *)
+  let rec context_to_toc (context : Page.context) ~path children =
+    let context_children =
+      List.map
+        (fun (child_title, child_url) ->
+          { url = child_url; text = child_title; children = [] })
+        context.children
+    in
+    let children = context_children @ children in
+    let t = { url = Some context.url; text = context.title; children } in
+    match context.parent with
+    | Some p -> context_to_toc p ~path [ t ]
+    | None -> [ t ]
 
   let compute page ~on_sub ~context t =
-    let mkurl anchor = { Url.Anchor.page; anchor; kind = `LeafPage } in
-    Rewire.walk ~classify:(classify ~on_sub) ~node:(node mkurl) t
-    |> wrap_context context ~path:page
+    let mkurl anchor = Some { Url.Anchor.page; anchor; kind = `LeafPage } in
+    let toc = Rewire.walk ~classify:(classify ~on_sub) ~node:(node mkurl) t in
+    match context with
+    | Some context -> context_to_toc context ~path:page toc
+    | None -> toc
 end
 
 module Subpages : sig
